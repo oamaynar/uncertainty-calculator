@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset=""UTF-8>
+    <meta charset="UTF-8">
     <title>Uncertainty Calculator</title>
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Link to MathQuill CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css">
 </head>
 <body>
     <h1>Uncertainty Calculator</h1>
     <p>Enter your equation below:</p>
 
     <!-- Input for the equation -->
-     <input type="text" id="equationInput" placeholder="e.g., x^2 + y^2">
-     <button onclick="processEquation()">Calculate</button>
+    <div id="equationInput"></div>
+
+    <!-- Container for dynamic variable inputs -->
+    <div id="variableInputs"></div>
+
+    <!-- Expression inspector for debugging -->
+    <div id="expressionInspector"></div>
 
     <!-- Output area -->
     <p id="outputArea"></p>
 
-    <!-- Link to JavaScript file -->
-    <script src=""script.js"></script>
+    <!-- Link to Math.js and MathQuill JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
+    <!-- Link to your JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>

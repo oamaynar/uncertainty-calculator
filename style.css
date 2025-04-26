@@ -20,3 +20,12 @@ button {
     margin-top: 20px;
     font-weight: bold;
 }
+
+#equationInput {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 40px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}

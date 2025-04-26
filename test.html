@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MathQuill Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css">
+    <style>
+        #equationInput {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 40px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MathQuill Test</h1>
+    <div id="equationInput"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
+    <script>
+        const MQ = MathQuill.getInterface(2); // Version 2 interface
+        const equationInput = MQ.MathField(document.getElementById('equationInput'), {
+            spaceBehavesLikeTab: true,
+            handlers: {
+                edit: function() {
+                    console.log("Live equation:", equationInput.latex());
+                }
+            }
+        });
+    </script>
+</body>
+</html>
