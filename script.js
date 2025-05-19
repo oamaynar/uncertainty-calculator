@@ -25,7 +25,7 @@ function updateVariableFields(latex) {
     // Parse the equation and extract variables
     const node = math.parse(equation);
 
-    const knownFunctions = new setInterval([
+    const knownFunctions = new Set([
       "sin", "cos", "tan", "sec", "csc", "cot",
       "asin", "acos", "atan",
       "sqrt", "log", "ln", "exp",
