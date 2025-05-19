@@ -5,7 +5,7 @@ const equationInput = MQ.MathField(document.getElementById('equationInput'), {
   handlers: {
     edit: function() {
       const latex = equationInput.latex(); // Get the LaTeX string
-      console.log("Live equation:", latex);
+      console.log("Live equation: ", latex);
 
       // Parse the equation and update variable fields
       updateVariableFields(latex);
@@ -20,58 +20,83 @@ let existingVariables = new Set();
 function updateVariableFields(latex) {
   try {
     // Convert LaTeX to a math.js-compatible string
-    const equation = math.parse(latex).toString();
+    const cleaned = cleanLatex(latex);
 
     // Parse the equation and extract variables
     const node = math.parse(equation);
-    const variables = node
-      .filter(node => node.isSymbolNode) // Get all symbol nodes
-      .map(node => node.name) // Extract variable names
-      .filter(variable => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(variable)); // Validate variable names
 
-    console.log("Variables found:", variables);
+    const knownFunctions = new setInterval([
+      "sin", "cos", "tan", "sec", "csc", "cot",
+      "asin", "acos", "atan",
+      "sqrt", "log", "ln", "exp",
+      "abs", "floor", "ceil", "round",
+      "min", "max", "pow", "mod",
+      "e", "pi"
+    ]);
 
-    // Generate input fields for variables
+  
+    const rawSymbols = node
+      .filter(n => n.isSymbolNode)
+      .map(n => n.name);
+
+    const variables = [...new Set(rawSymbols)].filter(name => !knownFunctions.has(name));
+
+    console.log("User parameters:", variables);
     generateFields(variables);
 
-    // Display the parsed expression for debugging
     document.getElementById('expressionInspector').innerText = JSON.stringify(node, null, 2);
+
   } catch (error) {
-    console.log("Parsing error:", error.message);
+    console.log("Parse error:", error.message);
     document.getElementById('expressionInspector').innerText = "Invalid equation.";
   }
 }
 
-// Function to dynamically generate input fields for variables
 function generateFields(variables) {
   const container = document.getElementById('variableInputs');
-  container.innerHTML = ""; // Clear existing fields
 
-  variables.forEach(variable => {
+  // Step 1: Remove fields for variables that no longer exist
+  for (const oldVar of existingVariables) {
+    if (!variables.includes(oldVar)) {
+      // Remove the inputs for this variable
+      const valueInput = document.getElementById(`${oldVar}Value`);
+      const uncertaintyInput = document.getElementById(`${oldVar}Uncertainty`);
+      const label = document.getElementById(`${oldVar}Label`);
+      const br = document.getElementById(`${oldVar}Break`);
+
+      if (valueInput) valueInput.remove();
+      if (uncertaintyInput) uncertaintyInput.remove();
+      if (label) label.remove();
+      if (br) br.remove();
+
+      existingVariables.delete(oldVar);
+    }
+  }
+
+  // Step 2: Add fields for new variables
+  for (const variable of variables) {
     if (!existingVariables.has(variable)) {
-      // Create label
       const label = document.createElement('label');
       label.innerText = `Value for ${variable}:`;
+      label.id = `${variable}Label`;
       container.appendChild(label);
 
-      // Create value input
       const valueInput = document.createElement('input');
       valueInput.type = 'text';
       valueInput.id = `${variable}Value`;
       container.appendChild(valueInput);
 
-      // Create uncertainty input
       const uncertaintyInput = document.createElement('input');
       uncertaintyInput.type = 'text';
       uncertaintyInput.id = `${variable}Uncertainty`;
       uncertaintyInput.placeholder = `Uncertainty for ${variable}`;
       container.appendChild(uncertaintyInput);
 
-      // Add a line break
-      container.appendChild(document.createElement('br'));
+      const br = document.createElement('br');
+      br.id = `${variable}Break`;
+      container.appendChild(br);
 
-      // Track the variable
       existingVariables.add(variable);
     }
-  });
+  }
 }
